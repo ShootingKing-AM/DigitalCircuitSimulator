@@ -61,96 +61,96 @@ class GateData // Gate outputs and Inputs
 
 class Gate
 {
-    public:
+	public:
 
-	    char GateType[4];
-		int id;
-        int numInputs;
+	char GateType[4];
+	int id;
+	int numInputs;
 
-		GateData** pInputs;
-		GateData* pOutput;
+	GateData** pInputs;
+	GateData* pOutput;
 
-    	Gate* nextGate;
-        Gate* pevGate;
+	Gate* nextGate;
+	Gate* pevGate;
 
-		Gate() {}
-        Gate( int numInpts )
-        {
-            nextGate = pevGate = null;
-            numInputs = numInpts;
-            pInputs = new GateData *[numInpts];
-			for( int i = 0; i < numInpts; i++ )
-			{
-				pInputs[i] = new GateData;
-			}
-			pOutput = new GateData;
-        }
-        ~Gate()
-        {
-            delete [] pInputs;
-            delete pOutput;
-        }
-		virtual int CalcOutput() { return 0; }
-
-        int GetOutput()
+	Gate() {}
+	Gate( int numInpts )
+	{
+		nextGate = pevGate = null;
+		numInputs = numInpts;
+		pInputs = new GateData *[numInpts];
+		for( int i = 0; i < numInpts; i++ )
 		{
-			for( int i = 0; i < numInputs; i++ )
-			{
-				if( !pInputs[i]->isDefined )
-				{
-					pInputs[i]->val = pInputs[i]->pParent->GetOutput();
-					pInputs[i]->isDefined = DEFINED_BY_CALC;
-				}
-			}
-			return CalcOutput();
+			pInputs[i] = new GateData;
 		}
+		pOutput = new GateData;
+	}
+	~Gate()
+	{
+		delete [] pInputs;
+		delete pOutput;
+	}
+	virtual int CalcOutput() { return 0; }
+
+	int GetOutput()
+	{
+		for( int i = 0; i < numInputs; i++ )
+		{
+			if( !pInputs[i]->isDefined )
+			{
+				pInputs[i]->val = pInputs[i]->pParent->GetOutput();
+				pInputs[i]->isDefined = DEFINED_BY_CALC;
+			}
+		}
+		return CalcOutput();
+	}
 };
 
 class AndGate : public Gate
 {
-    public:
+	public:
 		AndGate(int numInpts) : Gate(numInpts)
-        {
-            strcpy(GateType, "AND");
-        }
-        int CalcOutput()
-        {
-            pOutput->val = pInputs[0]->val;
-            for( int i = 0; i < numInputs; i++ )
-            {
-                pOutput->val *= pInputs[i]->val;
-            }
+		{
+			strcpy(GateType, "AND");
+		}
+		int CalcOutput()
+		{
+			pOutput->val = pInputs[0]->val;
+			for( int i = 0; i < numInputs; i++ )
+			{
+				pOutput->val *= pInputs[i]->val;
+			}
 			return pOutput->val;
-        }
+		}
 };
 
 class OrGate : public Gate
 {
-    public:
+	public:
 		OrGate(int numInpts) : Gate(numInpts)
 		{
 			strcpy(GateType, "OR"); 
 		}
-        int CalcOutput()
-        {
-            pOutput->val = pInputs[0]->val;
-            for( int i = 1; i < numInputs; i++ )
-            {
-                pOutput->val += pInputs[i]->val;
-            }
-            pOutput->val = (((pOutput->val)>0)?1:0);
+		int CalcOutput()
+		{
+			pOutput->val = pInputs[0]->val;
+			for( int i = 1; i < numInputs; i++ )
+			{
+				pOutput->val += pInputs[i]->val;
+			}
+			pOutput->val = (((pOutput->val)>0)?1:0);
 			return pOutput->val;
-        }
+		}
 };
 
 class GateManager
 {
-    Gate *pHead, *pTail;
-    // head - Gate1 - Gate2 - Gate3 - ..... - Tail null
+	Gate *pHead, *pTail;
+	// head - Gate1 - Gate2 - Gate3 - ..... - Tail null
 	int totalGates;
 	int outputSerial;
 
-    public:
+	public:
 		int numDirectPorts;
 		GateManager()
 		{
@@ -159,24 +159,24 @@ class GateManager
 			totalGates = 0;
 			numDirectPorts = 0;
 		}
-        Gate* addGate( int type, int numinpts )
-        {
+		Gate* addGate( int type, int numinpts )
+		{
 			Gate* ptr;
 
-            if( type )
-            {
-                ptr = new AndGate(numinpts);
+			if( type )
+			{
+				ptr = new AndGate(numinpts);
 			}
 			else
 			{
-                ptr = new OrGate(numinpts);
+				ptr = new OrGate(numinpts);
 			}
 
-            if( pHead == null )
-            {
-                pHead = ptr;
-            }
-            ptr->pevGate = pTail;
+			if( pHead == null )
+			{
+				pHead = ptr;
+			}
+			ptr->pevGate = pTail;
 
 			if( ptr->pevGate != null )
 			{
@@ -188,6 +188,7 @@ class GateManager
 
 			return ptr;
 		}
+
 		void printDataPoints()
 		{
 			Gate* itr = pHead;
@@ -406,7 +407,7 @@ class GateManager
 
 int main()
 {
-    GateManager gtMngr;
+	GateManager gtMngr;
 
 	printf( "\tWelcome to Digital Circuit Simulator v1.0\n\n \
 To create your own circuit the procedure is \n \
